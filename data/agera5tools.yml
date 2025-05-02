@@ -1,0 +1,172 @@
+# Configuration file for AgERA5tools
+#
+# In order to point AgERA5tools to his configuration file set an environment variable in the
+# shell from where you are starting python.
+#
+# on Mac/linux:
+#   export AGERA5TOOLS_CONFIG=/path/to/agera5tools.yaml
+#
+# on MS Windows:
+#   set AGERA5TOOLS_CONFIG=c:/path/to/agera5tools.yaml
+version: 0.1
+logging:
+  # Details for the log. Log levels follow conventions of the python logging framework.
+  log_path: /tmp/agera5/logs
+  log_fname: agera5tools.log
+  log_level_console: WARNING
+  log_level_file: INFO
+
+region:
+  # This defines the characteristics of the region that you want to set up.
+  name: "Zimbabwe"
+  boundingbox:
+    lon_min: -17.53
+    lat_min: -34.83
+    lon_max: 51.42
+    lat_max: 37.35
+  shapefile: /tank/crop_modelling/lima/CropModellingArise/data/shp/Zimbabwe.shp
+
+temporal_range:
+  # Temporal range defines the time range for which the database should be retrieved from the CDS.
+  # Most important here is the start_year which should be >= 1979. For a database which will be
+  # updated daily (e.g. a mirror), the end_year should be in the future but for a database with a
+  # fixed time period another end_year can be chosen.
+  start_year: 1980-01-01
+  end_year: 1980-12-31
+
+misc:
+  # Miscellaneous settings:
+  #  - kelvin_to_celsius indicates if temperature conversion should be done.
+  kelvin_to_celsius: yes
+
+cdsapi:
+  # Details for the Copernicus Climate Data Store. Information here will be written into the
+  # $HOME/.cdsapirc file, which is used by the python API client for the CDS.
+  url: https://cds.climate.copernicus.eu/api/v2
+  key: 470898de-e29d-4b2b-a372-c9cf6a7206c2 #<Your API key here.
+  uid: 130590 #<Your UID here>
+  verify: 1
+
+database:
+  # Details for the database that will be used to store the AgERA5 data.
+  # The data source name (dsn) points to the database and should have the form of an
+  # SQLAlchemy database URL: https://docs.sqlalchemy.org/en/20/core/engines.html
+  # Note that the URL may contain the database password in plain text which is a security
+  # risk.
+  dsn: sqlite:////tmp/agera5/agera5.db
+  agera5_table_name: weather_grid_agera5
+  grid_table_name: grid_agera5
+
+data_storage:
+  # Storage path for NetCDF files, CSV files and temporary storage.
+  netcdf_path: /home/midingoyic/projects/AIDA/LIMA/data/weather/agera5/ncfiles/
+  keep_netcdf: yes
+  tmp_path: /home/midingoyic/projects/AIDA/LIMA/data/weather/agera5/tmp
+  csv_path: /home/midingoyic/projects/AIDA/LIMA/data/weather/agera5/csv
+  extract_path: /home/midingoyic/projects/AIDA/LIMA/data/weather/agera5/extracted_data
+
+agera:
+  typeofdata: 'sis-agrometeorological-indicators'
+  freq: 'daily'
+  #typeofdata: 'reanalysis-era5-land'
+  #freq: 'hourly'
+
+chirps:
+ chirps_path: /home/midingoyic/projects/AIDA/LIMA/data/weather/chirps
+ extract_path: /home/midingoyic/projects/AIDA/LIMA/data/weather/chirps/extracted_data
+ resolution: p05
+ timestep: daily
+
+soil:
+  source: isric
+  output: /home/midingoyic/projects/AIDA/LIMA/data/soil
+
+elevation:
+  #source: NOAA
+  #url: https://www.opentopodata.org/datasets/etopo1/
+  #output: /home/midingoyic/projects/AIDA/LIMA/data/dem/
+  source: MERIT
+  output: /home/midingoyic/projects/AIDA/LIMA/data/dem/
+   
+
+combine_by_param: 
+  do_combine: yes
+  combine_path: /home/midingoyic/projects/AIDA/LIMA/merged_data/meteo/
+variables:
+  # Select which variables should be downloaded from the CDS
+  Temperature_Air_2m_Mean_24h: no
+  Temperature_Air_2m_Mean_Day_Time: no
+  Temperature_Air_2m_Mean_Night_Time: no
+  Dew_Point_Temperature_2m_Mean: no
+  Temperature_Air_2m_Max_24h: no
+  Temperature_Air_2m_Min_24h: no
+  Temperature_Air_2m_Max_Day_Time: no
+  Temperature_Air_2m_Min_Night_Time: no
+  Cloud_Cover_Mean: no
+  Snow_Thickness_LWE_Mean: no
+  Snow_Thickness_Mean: no
+  Vapour_Pressure_Mean: no
+  Precipitation_Flux: no
+  Solar_Radiation_Flux: no
+  Wind_Speed_10m_Mean: yes
+  Relative_Humidity_2m_06h: no
+  Relative_Humidity_2m_09h: no
+  Relative_Humidity_2m_12h: no
+  Relative_Humidity_2m_15h: no
+  Relative_Humidity_2m_18h: no
+  Precipitation_Rain_Duration_Fraction: no
+  Precipitation_Solid_Duration_Fraction: no
+
+var_hourly:
+  2m_dewpoint_temperature: 
+    do: yes
+    agg: [mean, max, min]
+  2m_temperature: 
+    do: no
+    agg: [mean, max, min]
+  forecast_albedo: 
+    do: no
+  leaf_area_index_high_vegetation: 
+    do: no
+  leaf_area_index_low_vegetation: 
+    do: no
+  potential_evaporation: 
+    do: no
+  runoff: 
+    do: no
+  snow_albedo: 
+    do: no
+  snow_cover: 
+    do: no
+  snow_depth: 
+    do: no
+  soil_temperature_level_1: 
+    do: no
+  soil_temperature_level_2: 
+    do: no
+  soil_temperature_level_3: 
+    do: no
+  soil_temperature_level_4: 
+    do: no
+  surface_net_solar_radiation: 
+    do: no
+    agg: [sum]
+  surface_solar_radiation_downwards: 
+    do: no
+    agg: [sum]
+  surface_pressure: 
+    do: yes
+  temperature_of_snow_layer: 
+    do: no
+  total_evaporation: 
+    do: no
+  total_precipitation: 
+    do: no
+  volumetric_soil_water_layer_1: 
+    do: no
+  volumetric_soil_water_layer_3: 
+    do: no
+  volumetric_soil_water_layer_4: 
+    do: no
+
+
